@@ -32,7 +32,7 @@ class TestLeafNode(unittest.TestCase):
             {"class": "greeting", "href": "https://boot.dev"}
         )
         self.assertEqual(
-            '<bold class="greeting" href="https://boot.dev">Hello, world!<bold>',
+            '<bold class="greeting" href="https://boot.dev">Hello, world!</bold>',
             node.to_html()
         )
     
