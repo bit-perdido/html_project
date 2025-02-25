@@ -50,6 +50,68 @@ def extract_markdown_links(text):
     return links_ordered
 
 def split_nodes_image(old_nodes):
-    pass
+    new_nodes = []
+    for node in old_nodes:
+        urls = extract_markdown_images(node.text)
+        if urls == []:
+            new_nodes.append(node)
+            continue
+
+        text_divided = [node.text]
+        for i in range(len(urls)):
+            new = text_divided[-1].split(f"![{urls[i][0]}]({urls[i][1]})", 1)
+            text_divided.pop()
+            text_divided.extend([new[0], None, new[1]])
+
+        j = 0
+        for i in range(len(text_divided)):
+            if text_divided[i] == "":
+                continue
+            
+            if text_divided[i] == None:
+                new_nodes.append(TextNode(
+                    urls[j][0],
+                    TextType.IMAGES,
+                    urls[j][1]
+                    ))
+                j += 1
+
+            else:
+                new_nodes.append(TextNode(text_divided[i], node.text_type))
+    
+    return new_nodes
+
+def split_nodes_links(old_nodes):
+    new_nodes = []
+    for node in old_nodes:
+        urls = extract_markdown_links(node.text)
+        if urls == []:
+            new_nodes.append(node)
+            continue
+
+        text_divided = [node.text]
+        for i in range(len(urls)):
+            new = text_divided[-1].split(f"[{urls[i][0]}]({urls[i][1]})", 1)
+            text_divided.pop()
+            text_divided.extend([new[0], None, new[1]])
+
+        j = 0
+        for i in range(len(text_divided)):
+            if text_divided[i] == "":
+                continue
+            
+            if text_divided[i] == None:
+                new_nodes.append(TextNode(
+                    urls[j][0],
+                    TextType.LINKS,
+                    urls[j][1]
+                    ))
+                j += 1
+
+            else:
+                new_nodes.append(TextNode(text_divided[i], node.text_type))
+    
+    return new_nodes
+
 
 main()
