@@ -1,5 +1,5 @@
 import unittest
-from main import text_to_textnodes
+from inline_markdown import text_to_textnodes
 from textnode import *
 
 class TestTextNodeToHTMLNode(unittest.TestCase):
