@@ -53,7 +53,7 @@ def split_nodes_image(old_nodes):
     new_nodes = []
     for node in old_nodes:
         urls = extract_markdown_images(node.text)
-        if urls == []:
+        if urls == [] or node.text_type != TextType.NORMAL:
             new_nodes.append(node)
             continue
 
@@ -85,7 +85,7 @@ def split_nodes_links(old_nodes):
     new_nodes = []
     for node in old_nodes:
         urls = extract_markdown_links(node.text)
-        if urls == []:
+        if urls == [] or node.text_type != TextType.NORMAL:
             new_nodes.append(node)
             continue
 
@@ -113,5 +113,17 @@ def split_nodes_links(old_nodes):
     
     return new_nodes
 
+def text_to_textnodes(text):
+    nodes = [TextNode(text, TextType.NORMAL)]
+    nodes = split_nodes_delimiter(nodes, "**", TextType.BOLD)
+    nodes = split_nodes_delimiter(nodes, "*", TextType.ITALIC)
+    nodes = split_nodes_delimiter(nodes, "`", TextType.CODE)
+    nodes = split_nodes_image(nodes)
+    nodes = split_nodes_links(nodes)
+    return nodes
 
-main()
+
+
+if __name__ == "__main__":
+    main()
+
