@@ -72,6 +72,8 @@ def heading_tag_constructor(block):
     almohadillas, text = block.split(" ", 1)
     text = text.replace("\n"," ")
     count = len(almohadillas)
-    tag = "h" + str(count)
+    if count > 6:
+        raise ValueError("invalid heading count: {count}")
+    tag = f"h{count}"
 
     return ParentNode(tag, text_to_children(text))
