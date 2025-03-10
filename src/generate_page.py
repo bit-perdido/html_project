@@ -12,17 +12,20 @@ def extract_title(markdown):
             if count == 1:
                 return text
     
-    raise Exception("Heading 1 not found")
+    raise ValueError("Heading 1 not found")
                 
 
 def generate_page(from_path, template_path, dest_path):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
     if not os.path.isfile(from_path):
-        return Exception("No markdown given")
+        return ValueError("No markdown given")
     markdown_file = open(from_path, "r")
     markdown = markdown_file.read()
+    markdown_file.close()
+
     template_file = open(template_path, "r")
     template = template_file.read()
+    template_file.close()
     
     html_node = markdown_to_html_node(markdown)
     html_text = html_node.to_html()
@@ -34,4 +37,16 @@ def generate_page(from_path, template_path, dest_path):
         os.makedirs(dest_path)
     new_page_file = open(file_name, "w")
     new_page_file.write(new_page)
+    new_page_file.close()
 
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+    objects = os.listdir(dir_path_content)
+    for object in objects:
+        object_path = f"{dir_path_content}/{object}"
+        if os.path.isfile(object_path):
+            generate_page(object_path, template_path, dest_dir_path)
+        
+        elif os.path.isdir(object_path):
+            dir_path_object = f"{dir_path_content}/{object}"
+            dest_path_object = f"{dest_dir_path}/{object}"
+            generate_pages_recursive(dir_path_object, template_path, dest_path_object)
