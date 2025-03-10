@@ -15,7 +15,7 @@ def extract_title(markdown):
     raise ValueError("Heading 1 not found")
                 
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
     if not os.path.isfile(from_path):
         return ValueError("No markdown given")
@@ -32,6 +32,7 @@ def generate_page(from_path, template_path, dest_path):
     title = extract_title(markdown)
     
     new_page = template.replace("{{ Title }}", title, 1).replace("{{ Content }}", html_text, 1)
+    new_page = new_page.replace('href="/', f'href="{basepath}').replace('src="/', f'src="{basepath}')
     file_name = f"{dest_path}/index.html"
     if not os.path.exists(dest_path):
         os.makedirs(dest_path)
@@ -39,14 +40,14 @@ def generate_page(from_path, template_path, dest_path):
     new_page_file.write(new_page)
     new_page_file.close()
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, basepath):
     objects = os.listdir(dir_path_content)
     for object in objects:
         object_path = f"{dir_path_content}/{object}"
         if os.path.isfile(object_path):
-            generate_page(object_path, template_path, dest_dir_path)
+            generate_page(object_path, template_path, dest_dir_path, basepath)
         
         elif os.path.isdir(object_path):
             dir_path_object = f"{dir_path_content}/{object}"
             dest_path_object = f"{dest_dir_path}/{object}"
-            generate_pages_recursive(dir_path_object, template_path, dest_path_object)
+            generate_pages_recursive(dir_path_object, template_path, dest_path_object, basepath)

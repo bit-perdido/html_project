@@ -2,21 +2,20 @@ import os
 import shutil
 
 
-def restart_public():
-    public_path = "./public"
+def restart_public(page_root):
     static_path = "./static"
-    if os.path.exists(public_path):
-        print("Deleting public directory...")
-        shutil.rmtree(public_path)
+    if os.path.exists(page_root):
+        print(f"Deleting {page_root} directory...")
+        shutil.rmtree(page_root)
     else:
         print("Public directory missing, creating new one...")
-    os.mkdir("./public")
+    os.mkdir(page_root)
 
     if not os.path.exists(static_path):
         raise ValueError("path for static doesnt exist")
     
-    print("Copying static files to public directory...")
-    file_transfer(static_path, public_path)
+    print(f"Copying static files to {page_root} directory...")
+    file_transfer(static_path, page_root)
 
 
 def file_transfer(source, destination):
